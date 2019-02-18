@@ -1,0 +1,14 @@
+{
+  "name": "beholder-js",
+  "version": "0.0.1",
+  "description": "A simple observable model.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/jasmine/bin/jasmine.js ./test/beholderSpec.js"
+  },
+  "devDependencies": {
+    "jasmine": "^3.3.1"
+  },
+  "author": "Morgan Bentell & Tomas Ekholm",
+  "license": "MIT"
+}
