@@ -3,20 +3,20 @@ const beholder = require('../index');
 describe('mutableThing: ', function () {
     describe('create', function () {
         it('empty args should give an empty map', function () {
-            let mutableThing = beholder.mutableThing({});
+            var mutableThing = beholder.mutableThing();
             expect(mutableThing.deref()).toEqual({});
         });
 
         it('model from a map', function () {
-            let mutableThing = beholder.mutableThing({name: 'Ysera'});
+            var mutableThing = beholder.mutableThing({name: 'Ysera'});
             expect(mutableThing.deref()).toEqual({name: 'Ysera'});
         });
     });
 
     describe('reset', function () {
         it('reset the model', function () {
-            let mutableThing = beholder.mutableThing({name: 'Ysera'});
-            let result = mutableThing.reset({anotherName: 'Onyxia'});
+            var mutableThing = beholder.mutableThing({name: 'Ysera'});
+            var result = mutableThing.reset({anotherName: 'Onyxia'});
             expect(result).toEqual({anotherName: 'Onyxia'});
             expect(mutableThing.deref()).toEqual({anotherName: 'Onyxia'});
         });
@@ -24,19 +24,21 @@ describe('mutableThing: ', function () {
 
     describe('swap', function () {
         it('add a key-value to the model', function () {
-            let mutableThing = beholder.mutableThing({name: 'Ysera'});
-            let f = function (state, friend) {
+            var mutableThing = beholder.mutableThing({name: 'Ysera'});
+
+            function addFriend(state, friend) {
                 state.friend = friend;
                 return state;
-            };
-            let result = mutableThing.swap(f, 'Onyxia');
+            }
+
+            var result = mutableThing.swap(addFriend, 'Onyxia');
             expect(result).toEqual({name: 'Ysera', friend: 'Onyxia'});
             expect(mutableThing.deref()).toEqual({name: 'Ysera', friend: 'Onyxia'});
         });
 
         it('add a key-value to the model with anonymous function ', function () {
-            let mutableThing = beholder.mutableThing({name: 'Ysera'});
-            let result = mutableThing.swap(function (state) {
+            var mutableThing = beholder.mutableThing({name: 'Ysera'});
+            var result = mutableThing.swap(function (state) {
                 state.friend = 'Onyxia';
                 return state;
             });
@@ -46,31 +48,25 @@ describe('mutableThing: ', function () {
     });
 
     describe('watchers', function () {
-        it('should be able to add multiple watchers', function (done) {
-            let mutableThing = beholder.mutableThing({name: 'Ysera'});
+        it('should be able to add multiple watchers', function () {
+            var mutableThing = beholder.mutableThing({name: 'Ysera'});
             mutableThing.addWatch('watcher-1', function (data) {
             });
             mutableThing.addWatch('watcher-2', function (data) {
             });
-            done();
         });
 
         it('single watcher should be notified', function (done) {
-            let mutableThing = beholder.mutableThing({name: 'Ysera'});
+            var mutableThing = beholder.mutableThing({name: 'Ysera'});
             mutableThing.addWatch('ctrl', function (data) {
-                expect(true).toEqual(true);
                 done();
             });
 
-            mutableThing.swap(function (state) {
-                return {
-                    name: 'Onyxia'
-                };
-            });
+            mutableThing.reset({name: 'Onyxia'});
         });
 
         it('multiple watchers should be notified', function (done) {
-            let mutableThing = beholder.mutableThing({name: 'Ysera'});
+            var mutableThing = beholder.mutableThing({name: 'Ysera'});
 
             var results = [];
 
@@ -100,7 +96,7 @@ describe('mutableThing: ', function () {
         });
 
         it('should be able to remove watchers', function (done) {
-            let mutableThing = beholder.mutableThing({name: 'Ysera'});
+            var mutableThing = beholder.mutableThing({name: 'Ysera'});
             mutableThing.addWatch('old-watcher', function (data) {
                 if (data === {}) {
                     fail();
@@ -119,11 +115,5 @@ describe('mutableThing: ', function () {
                 };
             });
         });
-    });
-
-    it('Should be JSON.stringify friendly', function () {
-        let model = beholder.mutableThing({name: 'Ysera'});
-        let result = JSON.stringify(model.deref());
-        expect(result).toEqual('{"name":"Ysera"}');
     });
 });

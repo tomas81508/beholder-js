@@ -15,7 +15,7 @@ function mutableThing(initialState) {
     }
 
     function notifyWatchers(state) {
-        let callbacks = [];
+        var callbacks = [];
         for (var key in watchers) {
             if (watchers.hasOwnProperty(key)) {
                 callbacks.push(watchers[key]);
@@ -43,7 +43,11 @@ function mutableThing(initialState) {
     }
 
     function removeWatch(key) {
-        delete watchers[key];
+        if (key) {
+            delete watchers[key];
+        } else {
+            watchers = {};
+        }
         return undefined;
     }
 
